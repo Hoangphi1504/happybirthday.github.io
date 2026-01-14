@@ -1,119 +1,256 @@
-function message() {
-   const message = "Happy Birthday*Tuyền*",
-      messageText = document.querySelectorAll(".message__text"),
-      messageSplit = message.split(""),
-         messageContainer = document.querySelector(".message"),
-         messageBtn = document.querySelector(".message__btn"),
-         reloadBtn = document.querySelector(".reload"),
-         particlesContainer = document.getElementById("particles-js");
-   
-   const colors = ["#f7b267", "#f79d65", "#f4845f", "#f27059", "#f25c54"];
-   let i = 0;
-   
-   messageBtn.addEventListener("click", openMessage);
-   reloadBtn.addEventListener("click", openMessage);
-   
-   //Open Message
-   function openMessage() {
-          if(messageContainer.classList.contains("clicked")) {
-             messageContainer.classList.remove("clicked");
-             reloadBtn.style.display ="none";
-             particlesContainer.classList.remove("show");
-          } else {
-             messageContainer.classList.add("clicked");
-             reloadBtn.style.display = "block";
-             setTimeout(() => {
-               particlesContainer.classList.add("show");
-           }, 1000);
-             
-          }
-   }
-   
-   
-   // Get Message ans Split Chars
-   messageSplit.forEach(function (el) {
-      let template = `
-         <p class="message__letters">
-            <span class="message__letterMain">${el}</span>
-            <span class="message__letterShadow">${el}</span>
-         </p>`;
-   
-      messageText.forEach(function (el) {
-         el.insertAdjacentHTML("beforeend", template);
-      });
-   });
-   
-   
-   // Add colours to Letters
-   const letterMain = document.querySelectorAll(".message__letterMain");
-   letterMain.forEach(function (el) {
-      if(i == colors.length) i=0
-       el.style.color = colors[i];
-         i++;
-   });
-   }
-   
-   message();
-   
-   
-   /// Particle JS
-   
-   /* ---- particles.js config ---- */
-   
-   particlesJS("particles-js", {
-      particles: {
-         number: { value: 80, density: { enable: true, value_area: 800 } },
-         color: { value: ["#f7b267", "#f79d65", "#f4845f", "#f27059", "#f25c54", "#ffffff", "#cc444b", "#ff6b6b","#e63946" ] },
-         shape: {
-            type: "circle",
-            stroke: { width: 0, color: "#000000" },
-            polygon: { nb_sides: 5 },
-            image: { src: "img/github.svg", width: 100, height: 100 }
-         },
-         opacity: {
-            value: 1,
-            random: false,
-            anim: { enable: false, speed: 1, opacity_min: 0.1, sync: false }
-         },
-         size: {
-            value: 6,
-            random: true,
-            anim: { enable: false, speed: 40, size_min: 0.1, sync: false }
-         },
-         line_linked: {
-            enable: false,
-            distance: 150,
-            color: "#ffffff",
-            opacity: 0.4,
-            width: 1
-         },
-         move: {
-            enable: true,
-            speed: 6,
-            direction: "top",
-            random: true,
-            straight: false,
-            out_mode: "bounce",
-            bounce: false,
-            attract: { enable: false, rotateX: 600, rotateY: 1200 }
-         }
-      },
-      interactivity: {
-         detect_on: "canvas",
-         events: {
-            onhover: { enable: true, mode: "repulse" },
-            onclick: { enable: true, mode: "push" }, 
-            resize: true
-         },
-         modes: {
-            grab: { distance: 400, line_linked: { opacity: 1 } },
-            bubble: { distance: 400, size: 40, duration: 2, opacity: 8, speed: 3 },
-            repulse: { distance: 150, duration: 0.4 },
-            push: { particles_nb: 4 },
-            remove: { particles_nb: 2 }
-         }
-      },
-      retina_detect: true
-   });
+const {
+  gsap,
+  gsap: { to, timeline, set, delayedCall },
+  Splitting } =
+window;
+
+Splitting();
+
+const BTN = document.querySelector('.birthday-button__button');
+const SOUNDS = {
+  CHEER: new Audio(
+  'https://s3-us-west-2.amazonaws.com/s.cdpn.io/605876/cheer.mp3'),
+
+  MATCH: new Audio(
+  'https://s3-us-west-2.amazonaws.com/s.cdpn.io/605876/match-strike-trimmed.mp3'),
+
+  TUNE: new Audio(
+  'https://s3-us-west-2.amazonaws.com/s.cdpn.io/605876/happy-birthday-trimmed.mp3'),
+
+  ON: new Audio('https://assets.codepen.io/605876/switch-on.mp3'),
+  BLOW: new Audio(
+  'https://s3-us-west-2.amazonaws.com/s.cdpn.io/605876/blow-out.mp3'),
+
+  POP: new Audio(
+  'https://s3-us-west-2.amazonaws.com/s.cdpn.io/605876/pop-trimmed.mp3'),
+
+  HORN: new Audio(
+  'https://s3-us-west-2.amazonaws.com/s.cdpn.io/605876/horn.mp3') };
 
 
+
+const EYES = document.querySelector('.cake__eyes');
+const BLINK = eyes => {
+  gsap.set(eyes, { scaleY: 1 });
+  if (eyes.BLINK_TL) eyes.BLINK_TL.kill();
+  eyes.BLINK_TL = new gsap.timeline({
+    delay: Math.floor(Math.random() * 4) + 1,
+    onComplete: () => BLINK(eyes) });
+
+  eyes.BLINK_TL.to(eyes, {
+    duration: 0.05,
+    transformOrigin: '50% 50%',
+    scaleY: 0,
+    yoyo: true,
+    repeat: 1 });
+
+};
+BLINK(EYES);
+
+const FROSTING_TL = () =>
+timeline().
+to(
+'#frosting',
+{
+  scaleX: 1.015,
+  duration: 0.25 },
+
+0).
+
+to(
+'#frosting',
+{
+  scaleY: 1,
+  duration: 1 },
+
+0).
+
+to(
+'#frosting',
+{
+  duration: 1,
+  morphSVG: '.cake__frosting--end' },
+
+0);
+
+// Extract to sprinkle
+const SPRINKLES_TL = () =>
+timeline().to('.cake__sprinkle', { scale: 1, duration: 0.06, stagger: 0.02 });
+// Extract out to your own timeline
+const SPIN_TL = () =>
+timeline().
+set('.cake__frosting-patch', { display: 'block' }).
+to(
+['.cake__frosting--duplicate', '.cake__sprinkles--duplicate'],
+{ x: 0, duration: 1 },
+0).
+
+to(
+['.cake__frosting--start', '.cake__sprinkles--initial'],
+{ x: 65, duration: 1 },
+0).
+
+to('.cake__face', { duration: 1, x: -48.82 }, 0);
+
+const flickerSpeed = 0.1;
+const FLICKER_TL = timeline().
+to('.candle__flame-outer', {
+  duration: flickerSpeed,
+  repeat: -1,
+  yoyo: true,
+  morphSVG: '#flame-outer' }).
+
+to(
+'.candle__flame-inner',
+{
+  duration: flickerSpeed,
+  repeat: -1,
+  yoyo: true,
+  morphSVG: '#flame-inner' },
+
+0);
+
+
+const SHAKE_TL = () =>
+timeline({ delay: 0.5 }).
+set('.cake__face', { display: 'none' }).
+set('.cake__face--straining', { display: 'block' }).
+to(
+'.birthday-button',
+{
+  onComplete: () => {
+    set('.cake__face--straining', { display: 'none' });
+    set('.cake__face', { display: 'block' });
+  },
+  x: 1,
+  y: 1,
+  repeat: 13,
+  duration: 0.1 },
+
+0).
+
+to(
+'.cake__candle',
+{
+  onComplete: () => {
+    FLICKER_TL.play();
+  },
+  onStart: () => {
+    SOUNDS.POP.play();
+    delayedCall(0.2, () => SOUNDS.POP.play());
+    delayedCall(0.4, () => SOUNDS.POP.play());
+  },
+  ease: 'Elastic.easeOut',
+  duration: 0.2,
+  stagger: 0.2,
+  scaleY: 1 },
+
+0.2);
+
+const FLAME_TL = () =>
+timeline({}).
+to('.cake__candle', { '--flame': 1, stagger: 0.2, duration: 0.1 }).
+to('body', { '--flame': 1, '--lightness': 5, duration: 0.2, delay: 0.2 });
+const LIGHTS_OUT = () =>
+timeline().to('body', {
+  onStart: () => SOUNDS.BLOW.play(),
+  delay: 0.5,
+  '--lightness': 0,
+  duration: 0.1,
+  '--glow-saturation': 0,
+  '--glow-lightness': 0,
+  '--glow-alpha': 1,
+  '--transparency-alpha': 1 });
+
+
+const RESET = () => {
+  set('.char', {
+    '--hue': () => Math.random() * 360,
+    '--char-sat': 0,
+    '--char-light': 0,
+    x: 0,
+    y: 0,
+    opacity: 1 });
+
+  set('body', {
+    '--frosting-hue': Math.random() * 360,
+    '--glow-saturation': 50,
+    '--glow-lightness': 35,
+    '--glow-alpha': 0.4,
+    '--transparency-alpha': 0,
+    '--flame': 0 });
+
+  set('.cake__candle', { '--flame': 0 });
+  to('body', {
+    '--lightness': 50,
+    duration: 0.25 });
+
+  // SET THESE
+  set('.cake__frosting--end', { opacity: 0 });
+  set('#frosting', {
+    transformOrigin: '50% 10%',
+    scaleX: 0,
+    scaleY: 0 });
+
+  set('.cake__frosting-patch', { display: 'none' });
+  set(['.cake__frosting--duplicate', '.cake__sprinkles--duplicate'], { x: -65 });
+  set('.cake__face', { x: -110 });
+  set('.cake__face--straining', { display: 'none' });
+  set('.cake__sprinkle', {
+    '--sprinkle-hue': () => Math.random() * 360,
+    scale: 0,
+    transformOrigin: '50% 50%' });
+
+  set('.birthday-button', { scale: 0.6, x: 0, y: 0 });
+  set('.birthday-button__cake', { display: 'none' });
+  set('.cake__candle', { scaleY: 0, transformOrigin: '50% 100%' });
+};
+RESET();
+const MASTER_TL = timeline({
+  onStart: () => {
+    SOUNDS.ON.play();
+  },
+  onComplete: () => {
+    delayedCall(2, RESET);
+    BTN.removeAttribute('disabled');
+  },
+  paused: true }).
+
+set('.birthday-button__cake', { display: 'block' }).
+to('.birthday-button', {
+  onStart: () => SOUNDS.CHEER.play(),
+  scale: 1,
+  duration: 0.2 }).
+
+to('.char', { '--char-sat': 70, '--char-light': 65, duration: 0.2 }, 0).
+to('.char', {
+  onStart: () => SOUNDS.HORN.play(),
+  delay: 0.75,
+  y: () => gsap.utils.random(-100, -200),
+  x: () => gsap.utils.random(-50, 50),
+  duration: () => gsap.utils.random(0.5, 1) }).
+
+to('.char', { opacity: 0, duration: 0.25 }, '>-0.5').
+add(FROSTING_TL()).
+add(SPRINKLES_TL()).
+add(SPIN_TL()).
+add(SHAKE_TL()).
+add(FLAME_TL(), 'FLAME_ON').
+add(LIGHTS_OUT(), 'LIGHTS_OUT');
+
+SOUNDS.TUNE.onended = SOUNDS.MATCH.onended = () => MASTER_TL.play();
+MASTER_TL.addPause('FLAME_ON', () => SOUNDS.MATCH.play());
+MASTER_TL.addPause('LIGHTS_OUT', () => SOUNDS.TUNE.play());
+BTN.addEventListener('click', () => {
+  BTN.setAttribute('disabled', true);
+  MASTER_TL.restart();
+});
+
+SOUNDS.TUNE.muted = SOUNDS.MATCH.muted = SOUNDS.HORN.muted = SOUNDS.POP.muted = SOUNDS.CHEER.muted = SOUNDS.BLOW.muted = SOUNDS.ON.muted = true;
+
+const toggleAudio = () => {
+  SOUNDS.TUNE.muted = SOUNDS.MATCH.muted = SOUNDS.POP.muted = SOUNDS.HORN.muted = SOUNDS.CHEER.muted = SOUNDS.BLOW.muted = SOUNDS.ON.muted = !SOUNDS.
+  BLOW.muted;
+};
+
+document.querySelector('#volume').addEventListener('input', toggleAudio);
