@@ -1,5 +1,5 @@
 function message() {
-   const message = "HappyBirthday*Tuyền*",
+   const message = "Happy Birthday*Tuyền*",
       messageText = document.querySelectorAll(".message__text"),
       messageSplit = message.split(""),
          messageContainer = document.querySelector(".message"),
@@ -115,4 +115,5 @@ function message() {
       },
       retina_detect: true
    });
+
 
